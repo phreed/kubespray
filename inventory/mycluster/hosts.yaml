@@ -1,23 +1,23 @@
 all:
   hosts:
     node1:
-      ansible_host: node1
+      ansible_host: 129.59.104.15
       ip: 129.59.104.15
       access_ip: 129.59.104.15
     node2:
-      ansible_host: node2
+      ansible_host: 129.59.104.57
       ip: 129.59.104.57
       access_ip: 129.59.104.57
     node3:
-      ansible_host: node3
+      ansible_host: 129.59.104.59
       ip: 129.59.104.59
       access_ip: 129.59.104.59
     node4:
-      ansible_host: node4
+      ansible_host: 129.59.104.123
       ip: 129.59.104.123
       access_ip: 129.59.104.123
     node5:
-      ansible_host: node5
+      ansible_host: 129.59.104.178
       ip: 129.59.104.178
       access_ip: 129.59.104.178
   children:
