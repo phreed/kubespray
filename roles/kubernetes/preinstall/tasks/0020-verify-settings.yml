@@ -93,12 +93,12 @@
     - kube_network_plugin != 'calico'
 
 # TODO: suppress
-- name: Stop if ip var does not match local ips
-  assert:
-    that: ip in ansible_all_ipv4_addresses
-  when:
-    - not ignore_assert_errors
-    - ip is defined
+#- name: Stop if ip var does not match local ips
+#  assert:
+#    that: ip in ansible_all_ipv4_addresses
+#  when:
+#    - not ignore_assert_errors
+#    - ip is defined
 
 - name: Stop if access_ip is not pingable
   command: ping -c1 {{ access_ip }}
