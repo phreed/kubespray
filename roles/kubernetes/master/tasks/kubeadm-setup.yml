@@ -142,23 +142,24 @@
     - kubeadm_already_run.stat.exists
     - apiserver_sans_check.changed
 
-- name: kubeadm | Initialize first master
-  command: >-
-    timeout -k 300s 300s
-    {{ bin_dir }}/kubeadm init
-    --config={{ kube_config_dir }}/kubeadm-config.yaml
-    --ignore-preflight-errors=all
-    --skip-phases={{ kubeadm_init_phases_skip | join(',') }}
-    --upload-certs
-  register: kubeadm_init
-  # Retry is because upload config sometimes fails
-  retries: 3
-  until: kubeadm_init is succeeded or "field is immutable" in kubeadm_init.stderr
-  when: inventory_hostname == groups['kube-master']|first and not kubeadm_already_run.stat.exists
-  failed_when: kubeadm_init.rc != 0 and "field is immutable" not in kubeadm_init.stderr
-  environment:
-    PATH: "{{ bin_dir }}:{{ ansible_env.PATH }}"
-  notify: Master | restart kubelet
+# TODO: supress
+#- name: kubeadm | Initialize first master
+#  command: >-
+#    timeout -k 300s 300s
+#    {{ bin_dir }}/kubeadm init
+#    --config={{ kube_config_dir }}/kubeadm-config.yaml
+#    --ignore-preflight-errors=all
+#    --skip-phases={{ kubeadm_init_phases_skip | join(',') }}
+#    --upload-certs
+#  register: kubeadm_init
+#  # Retry is because upload config sometimes fails
+#  retries: 3
+#  until: kubeadm_init is succeeded or "field is immutable" in kubeadm_init.stderr
+#  when: inventory_hostname == groups['kube-master']|first and not kubeadm_already_run.stat.exists
+#  failed_when: kubeadm_init.rc != 0 and "field is immutable" not in kubeadm_init.stderr
+#  environment:
+#    PATH: "{{ bin_dir }}:{{ ansible_env.PATH }}"
+#  notify: Master | restart kubelet
 
 - name: set kubeadm certificate key
   set_fact:
@@ -180,17 +181,18 @@
   tags:
     - kubeadm_token
 
-- name: Create kubeadm token for joining nodes with 24h expiration (default)
-  command: "{{ bin_dir }}/kubeadm --kubeconfig /etc/kubernetes/admin.conf token create"
-  changed_when: false
-  register: temp_token
-  retries: 5
-  delay: 5
-  until: temp_token is succeeded
-  delegate_to: "{{ groups['kube-master'] | first }}"
-  when: kubeadm_token is not defined
-  tags:
-    - kubeadm_token
+# TODO: supress
+#- name: Create kubeadm token for joining nodes with 24h expiration (default)
+#  command: "{{ bin_dir }}/kubeadm --kubeconfig /etc/kubernetes/admin.conf token create"
+#  changed_when: false
+#  register: temp_token
+#  retries: 5
+#  delay: 5
+#  until: temp_token is succeeded
+#  delegate_to: "{{ groups['kube-master'] | first }}"
+#  when: kubeadm_token is not defined
+#  tags:
+#    - kubeadm_token
 
 - name: Set kubeadm_token
   set_fact:

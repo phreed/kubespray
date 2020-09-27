@@ -1,4 +1,10 @@
 ---
+# TODO: suggest
+#- name: Configure | Stop firewalld
+#  service:
+#    name: firewalld
+#    state: stopped
+
 - name: Configure | Check if etcd cluster is healthy
   shell: "set -o pipefail && {{ bin_dir }}/etcdctl endpoint --cluster status && {{ bin_dir }}/etcdctl endpoint --cluster health  2>&1 | grep -q -v 'Error: unhealthy cluster'"
   args:
@@ -77,51 +83,53 @@
   ignore_errors: "{{ etcd_events_cluster_is_healthy.rc == 0 }}"
   when: is_etcd_master and etcd_events_cluster_setup
 
-- name: Configure | Wait for etcd cluster to be healthy
-  shell: "set -o pipefail && {{ bin_dir }}/etcdctl endpoint --cluster status && {{ bin_dir }}/etcdctl endpoint --cluster health 2>&1 | grep -q -v 'Error: unhealthy cluster'"
-  args:
-    executable: /bin/bash
-  register: etcd_cluster_is_healthy
-  until: etcd_cluster_is_healthy.rc == 0
-  retries: "{{ etcd_retries }}"
-  delay: "{{ retry_stagger | random + 3 }}"
-  changed_when: false
-  check_mode: no
-  run_once: yes
-  when:
-    - is_etcd_master
-    - etcd_cluster_setup
-  tags:
-    - facts
-  environment:
-    ETCDCTL_API: 3
-    ETCDCTL_CERT: "{{ etcd_cert_dir }}/admin-{{ inventory_hostname }}.pem"
-    ETCDCTL_KEY: "{{ etcd_cert_dir }}/admin-{{ inventory_hostname }}-key.pem"
-    ETCDCTL_CACERT: "{{ etcd_cert_dir }}/ca.pem"
-    ETCDCTL_ENDPOINTS: "{{ etcd_access_addresses }}"
+# TODO: supress
+#- name: Configure | Wait for etcd cluster to be healthy
+#  shell: "set -o pipefail && {{ bin_dir }}/etcdctl endpoint --cluster status && {{ bin_dir }}/etcdctl endpoint --cluster health 2>&1 | grep -q -v 'Error: unhealthy cluster'"
+#  args:
+#    executable: /bin/bash
+#  register: etcd_cluster_is_healthy
+#  until: etcd_cluster_is_healthy.rc == 0
+#  retries: "{{ etcd_retries }}"
+#  delay: "{{ retry_stagger | random + 3 }}"
+#  changed_when: false
+#  check_mode: no
+#  run_once: yes
+#  when:
+#    - is_etcd_master
+#    - etcd_cluster_setup
+#  tags:
+#    - facts
+#  environment:
+#    ETCDCTL_API: 3
+#    ETCDCTL_CERT: "{{ etcd_cert_dir }}/admin-{{ inventory_hostname }}.pem"
+#    ETCDCTL_KEY: "{{ etcd_cert_dir }}/admin-{{ inventory_hostname }}-key.pem"
+#    ETCDCTL_CACERT: "{{ etcd_cert_dir }}/ca.pem"
+#    ETCDCTL_ENDPOINTS: "{{ etcd_access_addresses }}"
 
-- name: Configure | Wait for etcd-events cluster to be healthy
-  shell: "set -o pipefail && {{ bin_dir }}/etcdctl endpoint --cluster status && {{ bin_dir }}/etcdctl endpoint --cluster health 2>&1 | grep -q -v 'Error: unhealthy cluster'"
-  args:
-    executable: /bin/bash
-  register: etcd_events_cluster_is_healthy
-  until: etcd_events_cluster_is_healthy.rc == 0
-  retries: "{{ etcd_retries }}"
-  delay: "{{ retry_stagger | random + 3 }}"
-  changed_when: false
-  check_mode: no
-  run_once: yes
-  when:
-    - is_etcd_master
-    - etcd_events_cluster_setup
-  tags:
-    - facts
-  environment:
-    ETCDCTL_API: 3
-    ETCDCTL_CERT: "{{ etcd_cert_dir }}/admin-{{ inventory_hostname }}.pem"
-    ETCDCTL_KEY: "{{ etcd_cert_dir }}/admin-{{ inventory_hostname }}-key.pem"
-    ETCDCTL_CACERT: "{{ etcd_cert_dir }}/ca.pem"
-    ETCDCTL_ENDPOINTS: "{{ etcd_events_access_addresses }}"
+# TODO: supress
+#- name: Configure | Wait for etcd-events cluster to be healthy
+#  shell: "set -o pipefail && {{ bin_dir }}/etcdctl endpoint --cluster status && {{ bin_dir }}/etcdctl endpoint --cluster health 2>&1 | grep -q -v 'Error: unhealthy cluster'"
+#  args:
+#    executable: /bin/bash
+#  register: etcd_events_cluster_is_healthy
+#  until: etcd_events_cluster_is_healthy.rc == 0
+#  retries: "{{ etcd_retries }}"
+#  delay: "{{ retry_stagger | random + 3 }}"
+#  changed_when: false
+#  check_mode: no
+#  run_once: yes
+#  when:
+#    - is_etcd_master
+#    - etcd_events_cluster_setup
+#  tags:
+#    - facts
+#  environment:
+#    ETCDCTL_API: 3
+#    ETCDCTL_CERT: "{{ etcd_cert_dir }}/admin-{{ inventory_hostname }}.pem"
+#    ETCDCTL_KEY: "{{ etcd_cert_dir }}/admin-{{ inventory_hostname }}-key.pem"
+#    ETCDCTL_CACERT: "{{ etcd_cert_dir }}/ca.pem"
+#    ETCDCTL_ENDPOINTS: "{{ etcd_events_access_addresses }}"
 
 - name: Configure | Check if member is in etcd cluster
   shell: "{{ bin_dir }}/etcdctl member list | grep -q {{ etcd_access_address }}"
