@@ -1,11 +1,5 @@
 # Calico
 
-N.B. **Version 2.6.5 upgrade to 3.1.1 is upgrading etcd store to etcdv3**
-
-If you create automated backups of etcdv2 please switch for creating etcdv3 backups, as kubernetes and calico now uses etcdv3
- After migration you can check `/tmp/calico_upgrade/` directory for converted items to etcdv3.
- **PLEASE TEST upgrade before upgrading production cluster.**
-
 Check if the calico-node container is running
 
 ```ShellSession
@@ -20,22 +14,10 @@ The **calicoctl.sh** is wrap script with configured acces credentials for comman
 calicoctl.sh node status
 ```
 
-or for versions prior to *v1.0.0*:
-
-```ShellSession
-calicoctl.sh status
-```
-
 * Show the configured network subnet for containers
 
 ```ShellSession
 calicoctl.sh get ippool -o wide
-```
-
-or for versions prior to *v1.0.0*:
-
-```ShellSession
-calicoctl.sh pool show
 ```
 
 * Show the workloads (ip addresses of containers and their location)
@@ -50,13 +32,21 @@ and
 calicoctl.sh get hostEndpoint -o wide
 ```
 
-or for versions prior *v1.0.0*:
-
-```ShellSession
-calicoctl.sh endpoint show --detail
-```
-
 ## Configuration
+
+### Optional : Define datastore type
+
+The default datastore, Kubernetes API datastore is recommended for on-premises deployments, and supports only Kubernetes workloads; etcd is the best datastore for hybrid deployments.
+
+Allowed values are `kdd` (default) and `etcd`.
+
+Note: using kdd and more than 50 nodes, consider using the `typha` daemon to provide scaling.
+
+To re-define you need to edit the inventory and add a group variable `calico_datastore`
+
+```yml
+calico_datastore: kdd
+```
 
 ### Optional : Define network backend
 
